@@ -6,7 +6,7 @@ from unittest.mock import patch, MagicMock
 from datetime import datetime
 from tkinter import messagebox
 from tkinter import Tk
-from app import TodoistStyleApp  # For same-directory import
+from todo_app.app import TodoistStyleApp  # For same-directory import
 
 class TestTodoistStyleApp(unittest.TestCase):
     @classmethod
@@ -214,4 +214,4 @@ class TestTodoistStyleApp(unittest.TestCase):
         self.assertEqual(self.app.task_tree.item(items[1])['tags'], ['completed'])
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main()git
