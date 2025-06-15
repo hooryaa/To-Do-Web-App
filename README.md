@@ -1,20 +1,20 @@
-# Team To-Do List Application
+# Productivity Pro - To-Do List Application
 
-A Python-based GUI application for managing team tasks with features for adding, completing, and deleting tasks with different priorities and due dates.
+A Python-based GUI application for managing tasks with Todoist-inspired interface, featuring task prioritization, completion tracking, and persistent storage.
 
 ## Features
 
-- Add tasks with priorities (Low, Medium, High)
-- Set due dates for tasks
+- Add tasks with priorities (Priority 1-3 or No Priority)
 - Mark tasks as complete/incomplete
-- Delete single or all tasks
+- Delete tasks with confirmation
 - Persistent storage of tasks (saved to JSON file)
-- Color-coded priorities
+- Modern, dark-themed UI with custom styling
 - Keyboard shortcuts (Enter to add task)
+- Context menu for quick actions
 
 ## Installation
 
 1. Ensure Python 3.x is installed
 2. Clone this repository:
    ```bash
-   git clone https://github.com/hooryaa/team-todo-app.git
+   git clone https://github.com/hooryaa/productivity-pro.git

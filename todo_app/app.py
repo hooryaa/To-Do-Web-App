@@ -11,61 +11,53 @@ class TodoistStyleApp:
     
     def __init__(self, root):
         self.root = root
+        self.todos = []
         self.setup_window()
-        self.todos = []  # Initialize todos list
-        self.load_todos()
         self.create_widgets()
         self.apply_styles()
         self.center_window()
-        self.refresh_list()  # Initial refresh
-    
+        self.load_todos()
+        self.refresh_list()
+        
     def setup_window(self):
         """Configure the main window"""
         self.root.title("Productivity Pro")
         self.root.geometry("800x600")
         self.root.minsize(600, 400)
-        self.root.configure(bg="#202826")  # Dark background
-    
-    def center_window(self):
-        """Center the window on screen"""
-        self.root.update_idletasks()
-        width = self.root.winfo_width()
-        height = self.root.winfo_height()
-        x = (self.root.winfo_screenwidth() // 2) - (width // 2)
-        y = (self.root.winfo_screenheight() // 2) - (height // 2)
-        self.root.geometry(f"{width}x{height}+{x}+{y}")
-    
+        self.root.configure(bg="#202826")
+
     def create_widgets(self):
         """Create all GUI widgets"""
         # Main container
-        main_container = tk.Frame(self.root, bg="#202826")
-        main_container.pack(expand=True, fill=tk.BOTH)
+        self.main_container = tk.Frame(self.root, bg="#202826")
+        self.main_container.pack(expand=True, fill=tk.BOTH)
         
         # Header
-        header_frame = tk.Frame(main_container, bg="#202826", height=60)
-        header_frame.pack(fill=tk.X, pady=(0, 10))
+        self.header_frame = tk.Frame(self.main_container, bg="#202826", height=60)
+        self.header_frame.pack(fill=tk.X, pady=(0, 10))
         
-        tk.Label(
-            header_frame,
+        self.title_label = tk.Label(
+            self.header_frame,
             text="PRODUCTIVITY PRO",
             font=("Segoe UI", 18, "bold"),
             bg="#202826",
-            fg="#F695C5"  # Primary pink accent
-        ).pack(side=tk.LEFT, padx=20)
+            fg="#F695C5"
+        )
+        self.title_label.pack(side=tk.LEFT, padx=20)
         
         # Sidebar
-        sidebar_frame = tk.Frame(main_container, bg="#202826", width=200)
-        sidebar_frame.pack(side=tk.LEFT, fill=tk.Y, padx=(0, 10))
+        self.sidebar_frame = tk.Frame(self.main_container, bg="#202826", width=200)
+        self.sidebar_frame.pack(side=tk.LEFT, fill=tk.Y, padx=(0, 10))
         
         # Sidebar items
         sidebar_items = ["Inbox", "Today", "Upcoming", "Projects"]
         for item in sidebar_items:
             btn = tk.Button(
-                sidebar_frame,
+                self.sidebar_frame,
                 text=item,
                 font=("Segoe UI", 11),
                 bg="#202826",
-                fg="#EFCADF",  # Secondary pale pink
+                fg="#EFCADF",
                 bd=0,
                 padx=20,
                 pady=10,
@@ -77,16 +69,16 @@ class TodoistStyleApp:
             btn.pack(fill=tk.X)
         
         # Content area
-        content_frame = tk.Frame(main_container, bg="#202826")
-        content_frame.pack(expand=True, fill=tk.BOTH)
+        self.content_frame = tk.Frame(self.main_container, bg="#202826")
+        self.content_frame.pack(expand=True, fill=tk.BOTH)
         
         # Task input
-        input_frame = tk.Frame(content_frame, bg="#202826", padx=20, pady=15)
-        input_frame.pack(fill=tk.X)
+        self.input_frame = tk.Frame(self.content_frame, bg="#202826", padx=20, pady=15)
+        self.input_frame.pack(fill=tk.X)
         
         self.task_var = tk.StringVar()
         self.task_entry = ttk.Entry(
-            input_frame,
+            self.input_frame,
             textvariable=self.task_var,
             font=("Segoe UI", 12)
         )
@@ -96,29 +88,29 @@ class TodoistStyleApp:
         # Priority dropdown
         self.priority_var = tk.StringVar(value="4")
         priorities = {"1": "❗️ Priority 1", "2": "❗️ Priority 2", "3": "❗️ Priority 3", "4": "No Priority"}
-        priority_menu = ttk.OptionMenu(
-            input_frame,
+        self.priority_menu = ttk.OptionMenu(
+            self.input_frame,
             self.priority_var,
             "4",
             *priorities.values()
         )
-        priority_menu.pack(side=tk.LEFT)
+        self.priority_menu.pack(side=tk.LEFT)
         
         # Add button
-        add_btn = ttk.Button(
-            input_frame,
+        self.add_btn = ttk.Button(
+            self.input_frame,
             text="Add Task",
             command=self.add_todo,
             style="Accent.TButton"
         )
-        add_btn.pack(side=tk.LEFT, padx=(10, 0))
+        self.add_btn.pack(side=tk.LEFT, padx=(10, 0))
         
         # Task list
-        list_frame = tk.Frame(content_frame, bg="#202826")
-        list_frame.pack(expand=True, fill=tk.BOTH, padx=20, pady=(0, 20))
+        self.list_frame = tk.Frame(self.content_frame, bg="#202826")
+        self.list_frame.pack(expand=True, fill=tk.BOTH, padx=20, pady=(0, 20))
         
         self.task_tree = ttk.Treeview(
-            list_frame,
+            self.list_frame,
             columns=("status", "task", "priority"),
             show="headings",
             selectmode="browse",
@@ -135,10 +127,10 @@ class TodoistStyleApp:
         self.task_tree.column("priority", width=100, stretch=False)
         
         # Scrollbar
-        scrollbar = ttk.Scrollbar(list_frame, orient="vertical", command=self.task_tree.yview)
-        self.task_tree.configure(yscrollcommand=scrollbar.set)
+        self.scrollbar = ttk.Scrollbar(self.list_frame, orient="vertical", command=self.task_tree.yview)
+        self.task_tree.configure(yscrollcommand=self.scrollbar.set)
         
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.task_tree.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         
         # Context menu
@@ -149,182 +141,216 @@ class TodoistStyleApp:
         # Bind events
         self.task_tree.bind("<Button-3>", self.show_context_menu)
         self.task_tree.bind("<Double-1>", self.toggle_completion)
-    
+
     def apply_styles(self):
-        """Configure custom styles with the pink and black color palette"""
+        """Configure custom styles for widgets"""
         style = ttk.Style()
+        style.theme_use("clam")
         
-        # Configure the theme
-        style.theme_use('clam')  # 'clam' theme is more customizable
+        # Configure colors
+        style.configure(
+            "TFrame",
+            background="#202826"
+        )
         
-        # Base styles
-        style.configure(".",
-                      background="#202826",
-                      foreground="#EFCADF",
-                      font=("Segoe UI", 11))
+        style.configure(
+            "TLabel",
+            background="#202826",
+            foreground="#EFCADF",
+            font=("Segoe UI", 10)
+        )
         
-        # Treeview styles
-        style.configure("Treeview",
-                      background="#2a3432",  # Slightly lighter dark background
-                      fieldbackground="#2a3432",
-                      foreground="#EFCADF",  # Pale pink text
-                      rowheight=35,
-                      font=("Segoe UI", 11),
-                      borderwidth=0)
+        style.configure(
+            "TEntry",
+            fieldbackground="#2a3432",
+            foreground="#EFCADF",
+            insertcolor="#EFCADF",
+            font=("Segoe UI", 12),
+            padding=5,
+            bordercolor="#3d4a47",
+            lightcolor="#3d4a47",
+            darkcolor="#3d4a47"
+        )
         
-        style.configure("Treeview.Heading",
-                      background="#202826",
-                      foreground="#F695C5",  # Brighter pink for headings
-                      font=("Segoe UI", 10, "bold"),
-                      borderwidth=0)
+        style.configure(
+            "TButton",
+            background="#3d4a47",
+            foreground="#EFCADF",
+            font=("Segoe UI", 10),
+            padding=6,
+            bordercolor="#3d4a47",
+            lightcolor="#3d4a47",
+            darkcolor="#3d4a47"
+        )
         
-        style.map("Treeview",
-                background=[("selected", "#3a4442")],  # Even lighter for selection
-                foreground=[("selected", "#F695C5")])  # Brighter pink for selected text
+        style.map(
+            "TButton",
+            background=[("active", "#4a5a56")],
+            foreground=[("active", "#F695C5")]
+        )
         
-        # Button styles
-        style.configure("Accent.TButton",
-                      foreground="#202826",  # Dark text
-                      background="#F695C5",  # Bright pink button
-                      font=("Segoe UI", 10, "bold"),
-                      padding=6,
-                      borderwidth=1)
+        style.configure(
+            "Accent.TButton",
+            background="#F695C5",
+            foreground="#202826",
+            font=("Segoe UI", 10, "bold"),
+            padding=6
+        )
         
-        style.map("Accent.TButton",
-                background=[("active", "#e485b5")])  # Slightly darker pink when pressed
+        style.map(
+            "Accent.TButton",
+            background=[("active", "#ffa9d9")],
+            foreground=[("active", "#202826")]
+        )
         
-        # Entry and Combobox styles
-        style.configure("TEntry",
-                      fieldbackground="#2a3432",
-                      foreground="#EFCADF",
-                      insertcolor="#EFCADF",
-                      bordercolor="#3a4442",
-                      lightcolor="#3a4442",
-                      darkcolor="#3a4442")
+        style.configure(
+            "Treeview",
+            background="#2a3432",
+            foreground="#EFCADF",
+            fieldbackground="#2a3432",
+            rowheight=30,
+            font=("Segoe UI", 11),
+            bordercolor="#3d4a47",
+            lightcolor="#3d4a47",
+            darkcolor="#3d4a47"
+        )
         
-        style.configure("TCombobox",
-                      fieldbackground="#2a3432",
-                      foreground="#EFCADF",
-                      background="#202826",
-                      selectbackground="#3a4442")
+        style.configure(
+            "Treeview.Heading",
+            background="#3d4a47",
+            foreground="#EFCADF",
+            font=("Segoe UI", 11, "bold"),
+            padding=5,
+            relief="flat"
+        )
         
-        style.map("TCombobox",
-                fieldbackground=[("readonly", "#2a3432")],
-                selectbackground=[("readonly", "#3a4442")])
-    
+        style.map(
+            "Treeview",
+            background=[("selected", "#F695C5")],
+            foreground=[("selected", "#202826")]
+        )
+        
+        style.configure(
+            "TMenubutton",
+            background="#3d4a47",
+            foreground="#EFCADF",
+            font=("Segoe UI", 10),
+            padding=6,
+            arrowcolor="#EFCADF"
+        )
+        
+        style.configure(
+            "Vertical.TScrollbar",
+            background="#3d4a47",
+            troughcolor="#202826",
+            bordercolor="#202826",
+            arrowcolor="#EFCADF"
+        )
+
+    def center_window(self):
+        """Center the window on screen"""
+        self.root.update_idletasks()
+        width = self.root.winfo_width()
+        height = self.root.winfo_height()
+        x = (self.root.winfo_screenwidth() // 2) - (width // 2)
+        y = (self.root.winfo_screenheight() // 2) - (height // 2)
+        self.root.geometry(f"{width}x{height}+{x}+{y}")
+
     def load_todos(self):
-        """Load tasks from JSON file"""
-        try:
-            if os.path.exists(self.DATA_FILE):
+        """Load todos from JSON file"""
+        if os.path.exists(self.DATA_FILE):
+            try:
                 with open(self.DATA_FILE, "r") as f:
-                    data = json.load(f)
-                    if isinstance(data, list):  # Check if data is a list
-                        self.todos = data
-                    else:
-                        self.todos = []
-        except Exception as e:
-            messagebox.showerror("Error", f"Failed to load tasks: {str(e)}")
+                    self.todos = json.load(f)
+            except (json.JSONDecodeError, IOError):
+                self.todos = []
+        else:
             self.todos = []
-    
+
     def save_todos(self):
-        """Save tasks to JSON file"""
+        """Save todos to JSON file"""
         try:
             with open(self.DATA_FILE, "w") as f:
                 json.dump(self.todos, f, indent=2)
-        except Exception as e:
-            messagebox.showerror("Error", f"Failed to save tasks: {str(e)}")
-    
+        except IOError:
+            messagebox.showerror("Error", "Could not save tasks to file.")
+
     def refresh_list(self):
         """Refresh the task list display"""
-        for item in self.task_tree.get_children():
-            self.task_tree.delete(item)
+        self.task_tree.delete(*self.task_tree.get_children())
         
         for todo in self.todos:
-            # Ensure each todo has the required keys
-            if not isinstance(todo, dict):
-                continue
-                
-            if "task" not in todo:
-                continue
-                
-            status = "✓" if todo.get("completed", False) else "◯"
-            priority = todo.get("priority", "4")
+            status = "✓" if todo["completed"] else ""
+            priority_text = {
+                "1": "❗️ Priority 1",
+                "2": "❗️ Priority 2",
+                "3": "❗️ Priority 3",
+                "4": "No Priority"
+            }.get(todo.get("priority", "4"), "No Priority")
             
-            priority_emoji = {
-                "1": "❗️ P1",
-                "2": "❗️ P2",
-                "3": "❗️ P3",
-                "4": "⏱️ No Priority"
-            }.get(priority, "⏱️ No Priority")
-            
-            tags = ("completed",) if todo.get("completed", False) else ()
-            
-            self.task_tree.insert("", "end",
-                                values=(status, todo["task"], priority_emoji),
-                                tags=tags)
+            self.task_tree.insert(
+                "",
+                "end",
+                values=(status, todo["task"], priority_text),
+                tags=("completed" if todo["completed"] else "pending")
+            )
         
-        self.task_tree.tag_configure("completed", foreground="#7a7a7a")  # Gray for completed items
-    
+        # Configure tag colors
+        self.task_tree.tag_configure("completed", foreground="#6c757d")
+        self.task_tree.tag_configure("pending", foreground="#EFCADF")
+
     def add_todo(self):
-        """Add a new task to the list"""
-        task_text = self.task_var.get().strip()
-        if not task_text:
+        """Add a new todo item"""
+        task = self.task_var.get().strip()
+        if not task:
             messagebox.showwarning("Warning", "Task cannot be empty!")
             return
         
+        priority = self.priority_var.get()
+        
         new_todo = {
-            "task": task_text,
-            "priority": self.priority_var.get(),
+            "task": task,
+            "priority": priority,
             "completed": False,
             "created_at": datetime.now().isoformat()
         }
         
         self.todos.append(new_todo)
+        self.save_todos()
+        self.refresh_list()
         self.task_var.set("")
-        self.save_todos()
-        self.refresh_list()
-    
+
     def toggle_completion(self, event=None):
-        """Toggle task completion status"""
-        selected = self.task_tree.focus()
-        if not selected:
+        """Toggle completion status of selected task"""
+        selected_item = self.task_tree.selection()
+        if not selected_item:
             return
         
-        selected_item = self.task_tree.item(selected)
-        task_text = selected_item["values"][1]
-        
-        for todo in self.todos:
-            if todo["task"] == task_text:
-                todo["completed"] = not todo.get("completed", False)
-                break
-        
+        item_index = self.task_tree.index(selected_item[0])
+        self.todos[item_index]["completed"] = not self.todos[item_index]["completed"]
         self.save_todos()
         self.refresh_list()
-    
+
     def delete_todo(self):
-        """Delete the selected task"""
-        selected = self.task_tree.focus()
-        if not selected:
-            messagebox.showwarning("Warning", "No task selected!")
+        """Delete selected todo item"""
+        selected_item = self.task_tree.selection()
+        if not selected_item:
             return
         
-        if messagebox.askyesno("Confirm", "Delete this task?"):
-            selected_item = self.task_tree.item(selected)
-            task_text = selected_item["values"][1]
-            
-            self.todos = [todo for todo in self.todos if todo["task"] != task_text]
+        if messagebox.askyesno("Confirm", "Are you sure you want to delete this task?"):
+            item_index = self.task_tree.index(selected_item[0])
+            del self.todos[item_index]
             self.save_todos()
             self.refresh_list()
-    
+
     def show_context_menu(self, event):
-        """Show the right-click context menu"""
+        """Show context menu for tasks"""
         item = self.task_tree.identify_row(event.y)
         if item:
             self.task_tree.selection_set(item)
             self.context_menu.post(event.x_root, event.y_root)
 
 def main():
-    """Main function to run the application"""
     root = tk.Tk()
     app = TodoistStyleApp(root)
     root.mainloop()
