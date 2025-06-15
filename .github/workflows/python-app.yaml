@@ -1,25 +1,23 @@
-
-python-app.yaml:
-```yaml
 name: Python CI
 
-on: [push, pull_request]  # Triggers on push/PR to any branch
+on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4  # Checks out your code
+    - uses: actions/checkout@v4
       
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
       
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
       
-      - name: Run tests
-        run: |
-          python -m unittest todo_app/test_app.py
+    - name: Run tests
+      run: |
+        python -m unittest discover -s todo_app
