@@ -148,104 +148,24 @@ class TodoistStyleApp:
         style.theme_use("clam")
         
         # Configure colors
-        style.configure(
-            "TFrame",
-            background="#202826"
-        )
-        
-        style.configure(
-            "TLabel",
-            background="#202826",
-            foreground="#EFCADF",
-            font=("Segoe UI", 10)
-        )
-        
-        style.configure(
-            "TEntry",
-            fieldbackground="#2a3432",
-            foreground="#EFCADF",
-            insertcolor="#EFCADF",
-            font=("Segoe UI", 12),
-            padding=5,
-            bordercolor="#3d4a47",
-            lightcolor="#3d4a47",
-            darkcolor="#3d4a47"
-        )
-        
-        style.configure(
-            "TButton",
-            background="#3d4a47",
-            foreground="#EFCADF",
-            font=("Segoe UI", 10),
-            padding=6,
-            bordercolor="#3d4a47",
-            lightcolor="#3d4a47",
-            darkcolor="#3d4a47"
-        )
-        
-        style.map(
-            "TButton",
-            background=[("active", "#4a5a56")],
-            foreground=[("active", "#F695C5")]
-        )
-        
-        style.configure(
-            "Accent.TButton",
-            background="#F695C5",
-            foreground="#202826",
-            font=("Segoe UI", 10, "bold"),
-            padding=6
-        )
-        
-        style.map(
-            "Accent.TButton",
-            background=[("active", "#ffa9d9")],
-            foreground=[("active", "#202826")]
-        )
-        
-        style.configure(
-            "Treeview",
-            background="#2a3432",
-            foreground="#EFCADF",
-            fieldbackground="#2a3432",
-            rowheight=30,
-            font=("Segoe UI", 11),
-            bordercolor="#3d4a47",
-            lightcolor="#3d4a47",
-            darkcolor="#3d4a47"
-        )
-        
-        style.configure(
-            "Treeview.Heading",
-            background="#3d4a47",
-            foreground="#EFCADF",
-            font=("Segoe UI", 11, "bold"),
-            padding=5,
-            relief="flat"
-        )
-        
-        style.map(
-            "Treeview",
-            background=[("selected", "#F695C5")],
-            foreground=[("selected", "#202826")]
-        )
-        
-        style.configure(
-            "TMenubutton",
-            background="#3d4a47",
-            foreground="#EFCADF",
-            font=("Segoe UI", 10),
-            padding=6,
-            arrowcolor="#EFCADF"
-        )
-        
-        style.configure(
-            "Vertical.TScrollbar",
-            background="#3d4a47",
-            troughcolor="#202826",
-            bordercolor="#202826",
-            arrowcolor="#EFCADF"
-        )
+        style.configure("TFrame", background="#202826")
+        style.configure("TLabel", background="#202826", foreground="#EFCADF", font=("Segoe UI", 10))
+        style.configure("TEntry", fieldbackground="#2a3432", foreground="#EFCADF", 
+                      insertcolor="#EFCADF", font=("Segoe UI", 12), padding=5)
+        style.configure("TButton", background="#3d4a47", foreground="#EFCADF", 
+                      font=("Segoe UI", 10), padding=6)
+        style.map("TButton", background=[("active", "#4a5a56")], foreground=[("active", "#F695C5")])
+        style.configure("Accent.TButton", background="#F695C5", foreground="#202826", 
+                       font=("Segoe UI", 10, "bold"), padding=6)
+        style.map("Accent.TButton", background=[("active", "#ffa9d9")], foreground=[("active", "#202826")])
+        style.configure("Treeview", background="#2a3432", foreground="#EFCADF", 
+                       fieldbackground="#2a3432", rowheight=30, font=("Segoe UI", 11))
+        style.configure("Treeview.Heading", background="#3d4a47", foreground="#EFCADF", 
+                       font=("Segoe UI", 11, "bold"), padding=5, relief="flat")
+        style.map("Treeview", background=[("selected", "#F695C5")], foreground=[("selected", "#202826")])
+        style.configure("TMenubutton", background="#3d4a47", foreground="#EFCADF", 
+                       font=("Segoe UI", 10), padding=6, arrowcolor="#EFCADF")
+        style.configure("Vertical.TScrollbar", background="#3d4a47", troughcolor="#202826")
 
     def center_window(self):
         """Center the window on screen"""
@@ -295,7 +215,6 @@ class TodoistStyleApp:
                 tags=("completed" if todo["completed"] else "pending")
             )
         
-        # Configure tag colors
         self.task_tree.tag_configure("completed", foreground="#6c757d")
         self.task_tree.tag_configure("pending", foreground="#EFCADF")
 

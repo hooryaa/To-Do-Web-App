@@ -1,0 +1,10 @@
+# For application
+tkinter
+
+# For testing
+pytest==7.4.0
+
+# For development
+python-dotenv==1.0.0
+black==23.3.0
+flake8==6.0.0

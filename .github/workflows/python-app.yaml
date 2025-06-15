@@ -21,8 +21,8 @@ jobs:
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install -r requirements.txt
       
     - name: Run tests
       run: |
-        xvfb-run -a python -m unittest todo_app/test_app.py
+        xvfb-run -a python -m pytest todo_app/test_app.py -v

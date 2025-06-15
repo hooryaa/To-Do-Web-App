@@ -6,19 +6,16 @@ from unittest.mock import patch, MagicMock
 import tkinter as tk
 from tkinter import messagebox
 
-# Add project root to Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 class TestTodoistStyleApp(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         try:
-            # Try to create a real Tk instance
             cls.root = tk.Tk()
-            cls.root.withdraw()  # Hide the window during tests
+            cls.root.withdraw()
             cls.real_gui = True
         except tk.TclError:
-            # Fall back to mock if no display available (CI environment)
             cls.root = MagicMock()
             cls.real_gui = False
 
@@ -30,15 +27,12 @@ class TestTodoistStyleApp(unittest.TestCase):
             os.remove("todos.json")
 
     def setUp(self):
-        # Clear any existing todos
         if os.path.exists("todos.json"):
             os.remove("todos.json")
         
-        # Import after setting up the root window
         from todo_app.app import TodoistStyleApp
         self.app = TodoistStyleApp(self.__class__.root)
         
-        # Mock Treeview selection for tests
         if not self.__class__.real_gui:
             self.app.task_tree = MagicMock()
             self.app.task_tree.selection.return_value = ['item1']
@@ -81,9 +75,15 @@ class TestTodoistStyleApp(unittest.TestCase):
             item = self.app.task_tree.get_children()[0]
             self.app.task_tree.selection_set(item)
         
+        # First toggle
         self.app.toggle_completion()
         self.assertTrue(self.app.todos[0]["completed"])
         
+        # Reset selection for second toggle
+        if not self.__class__.real_gui:
+            self.app.task_tree.index.return_value = 0
+        
+        # Second toggle
         self.app.toggle_completion()
         self.assertFalse(self.app.todos[0]["completed"])
 
