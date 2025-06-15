@@ -23,6 +23,6 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       
-    - name: Run tests with virtual display
+    - name: Run tests
       run: |
         xvfb-run -a python -m unittest todo_app/test_app.py
