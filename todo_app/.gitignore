@@ -1,0 +1,4 @@
+echo "__pycache__/" >> .gitignore
+echo "*.pyc" >> .gitignore
+echo "todos.json" >> .gitignore
+echo ".DS_Store" >> .gitignore
