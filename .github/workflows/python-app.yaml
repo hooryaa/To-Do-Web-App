@@ -25,4 +25,4 @@ jobs:
       
     - name: Run tests with virtual display
       run: |
-        xvfb-run -a cd todo_app && python -m unittest test_app.py
+        xvfb-run -a python -m unittest todo_app/test_app.py
