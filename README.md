@@ -17,4 +17,4 @@ A Python-based GUI application for managing tasks with Todoist-inspired interfac
 1. Ensure Python 3.x is installed
 2. Clone this repository:
    ```bash
-   git clone https://github.com/hooryaa/productivity-pro.git
+   git clone https://github.com/hooryaa/To-Do-Web-App
