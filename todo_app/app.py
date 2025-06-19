@@ -245,10 +245,14 @@ class TodoistStyleApp:
         if not selected_item:
             return
         
-        item_index = self.task_tree.index(selected_item[0])
-        self.todos[item_index]["completed"] = not self.todos[item_index]["completed"]
-        self.save_todos()
-        self.refresh_list()
+        try:
+            item_index = self.task_tree.index(selected_item[0])
+            if 0 <= item_index < len(self.todos):
+                self.todos[item_index]["completed"] = not self.todos[item_index]["completed"]
+                self.save_todos()
+                self.refresh_list()
+        except (IndexError, tk.TclError):
+            pass  # Handle cases where selection doesn't match todos list
 
     def delete_todo(self):
         """Delete selected todo item"""
