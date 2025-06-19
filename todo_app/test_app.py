@@ -74,16 +74,12 @@ class TestTodoistStyleApp(unittest.TestCase):
             self.app.refresh_list()
             item = self.app.task_tree.get_children()[0]
             self.app.task_tree.selection_set(item)
-        else:
-            # Reset mock for second toggle
-            self.app.task_tree.selection.return_value = ['item1']
-            self.app.task_tree.index.return_value = 0
-
+        
         # First toggle (False → True)
         self.app.toggle_completion()
         self.assertTrue(self.app.todos[0]["completed"])
 
-        # Reset selection for second toggle
+        # Reset selection and index for the second toggle, if in mock mode
         if not self.__class__.real_gui:
             self.app.task_tree.selection.return_value = ['item1']
             self.app.task_tree.index.return_value = 0
