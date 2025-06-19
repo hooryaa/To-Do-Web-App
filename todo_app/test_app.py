@@ -36,9 +36,6 @@ class TestTodoistStyleApp(unittest.TestCase):
         # Initialize mocks for task_tree for non-GUI tests
         if not self.__class__.real_gui:
             self.app.task_tree = MagicMock()
-            # These will be set before each toggle in test_toggle_completion
-            # self.app.task_tree.selection.return_value = ['item1']
-            # self.app.task_tree.index.return_value = 0
             self.app.task_tree.get_children.return_value = ['item1'] # This can be static for children check
 
     def tearDown(self):
@@ -76,24 +73,29 @@ class TestTodoistStyleApp(unittest.TestCase):
             self.app.refresh_list()
             item = self.app.task_tree.get_children()[0]
             self.app.task_tree.selection_set(item)
-        
-        # For mock scenario, ensure selection is set before each toggle call
-        if not self.__class__.real_gui:
+            
+            # First toggle (False → True)
+            self.app.toggle_completion()
+            self.assertTrue(self.app.todos[0]["completed"])
+
+            # Second toggle (True → False)
+            self.app.toggle_completion()
+            self.assertFalse(self.app.todos[0]["completed"])
+        else:
+            # For mock scenario, ensure selection and index are set before each toggle call
             self.app.task_tree.selection.return_value = ['item1']
             self.app.task_tree.index.return_value = 0
 
-        # First toggle (False → True)
-        self.app.toggle_completion()
-        self.assertTrue(self.app.todos[0]["completed"])
+            # Patch save_todos and refresh_list to do nothing in mock environment for this test
+            with patch.object(self.app, 'save_todos'), \
+                 patch.object(self.app, 'refresh_list'):
+                # First toggle (False → True)
+                self.app.toggle_completion()
+                self.assertTrue(self.app.todos[0]["completed"])
 
-        # For mock scenario, ensure selection is set again before the second toggle call
-        if not self.__class__.real_gui:
-            self.app.task_tree.selection.return_value = ['item1']
-            self.app.task_tree.index.return_value = 0
-
-        # Second toggle (True → False)
-        self.app.toggle_completion()
-        self.assertFalse(self.app.todos[0]["completed"])
+                # Second toggle (True → False)
+                self.app.toggle_completion()
+                self.assertFalse(self.app.todos[0]["completed"])
 
     def test_delete_todo(self):
         test_todo = {"task": "Test", "priority": "1", "completed": False}
