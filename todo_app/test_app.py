@@ -33,11 +33,13 @@ class TestTodoistStyleApp(unittest.TestCase):
         from todo_app.app import TodoistStyleApp
         self.app = TodoistStyleApp(self.__class__.root)
         
+        # Initialize mocks for task_tree for non-GUI tests
         if not self.__class__.real_gui:
             self.app.task_tree = MagicMock()
-            self.app.task_tree.selection.return_value = ['item1']
-            self.app.task_tree.index.return_value = 0
-            self.app.task_tree.get_children.return_value = ['item1']
+            # These will be set before each toggle in test_toggle_completion
+            # self.app.task_tree.selection.return_value = ['item1']
+            # self.app.task_tree.index.return_value = 0
+            self.app.task_tree.get_children.return_value = ['item1'] # This can be static for children check
 
     def tearDown(self):
         if os.path.exists("todos.json"):
@@ -75,11 +77,16 @@ class TestTodoistStyleApp(unittest.TestCase):
             item = self.app.task_tree.get_children()[0]
             self.app.task_tree.selection_set(item)
         
+        # For mock scenario, ensure selection is set before each toggle call
+        if not self.__class__.real_gui:
+            self.app.task_tree.selection.return_value = ['item1']
+            self.app.task_tree.index.return_value = 0
+
         # First toggle (False → True)
         self.app.toggle_completion()
         self.assertTrue(self.app.todos[0]["completed"])
 
-        # Reset selection and index for the second toggle, if in mock mode
+        # For mock scenario, ensure selection is set again before the second toggle call
         if not self.__class__.real_gui:
             self.app.task_tree.selection.return_value = ['item1']
             self.app.task_tree.index.return_value = 0
