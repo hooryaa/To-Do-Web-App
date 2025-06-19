@@ -1,6 +1,3 @@
-# For application
-tkinter
-
 # For testing
 pytest==7.4.0
 
